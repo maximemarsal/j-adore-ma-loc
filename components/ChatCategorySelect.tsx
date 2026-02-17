@@ -69,18 +69,20 @@ export function ChatCategorySelect({ categories, onSelect }: ChatCategorySelectP
                 ]}
                 onPress={() => onSelect(category)}
               >
-                <View style={[
-                  styles.iconContainer, 
-                  isUrgency && styles.urgencyIconContainer,
-                ]}>
-                  <IconComponent size={24} color={isUrgency ? '#ffffff' : '#0a373e'} />
+                <View style={styles.cardContent}>
+                  <View style={[
+                    styles.iconContainer, 
+                    isUrgency && styles.urgencyIconContainer,
+                  ]}>
+                    <IconComponent size={24} color={isUrgency ? '#ffffff' : '#0a373e'} />
+                  </View>
+                  <Text style={[
+                    styles.cardLabel, 
+                    isUrgency && styles.urgencyLabel,
+                  ]} numberOfLines={2}>
+                    {category.label}
+                  </Text>
                 </View>
-                <Text style={[
-                  styles.cardLabel, 
-                  isUrgency && styles.urgencyLabel,
-                ]} numberOfLines={2}>
-                  {category.label}
-                </Text>
                 {isMaintenance && (
                   <View style={styles.maintenanceBadge}>
                     <Text style={styles.maintenanceBadgeText}>+1000 artisans partenaires</Text>
@@ -122,17 +124,22 @@ const styles = StyleSheet.create({
   cardWrapper: {
     width: '48%',
     marginBottom: 12,
+    height: 140,
   },
   card: {
     backgroundColor: '#f8f9fa',
     borderRadius: 14,
     padding: 16,
-    alignItems: 'center',
-    minHeight: 130,
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'space-between',
   },
   urgencyCard: {
     backgroundColor: '#ef4146',
+  },
+  cardContent: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
   iconContainer: {
     width: 48,
@@ -160,7 +167,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 3,
     borderRadius: 4,
-    marginTop: 8,
+    alignSelf: 'center',
   },
   maintenanceBadgeText: {
     color: '#ffffff',

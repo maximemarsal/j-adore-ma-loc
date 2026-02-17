@@ -319,15 +319,6 @@ export function ChatMaintenance({
         </MotiView>
       ))}
 
-      <MotiView
-        from={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ type: 'timing', duration: 400, delay: 400 }}
-      >
-        <Pressable style={styles.doneButton} onPress={onMyCharge}>
-          <Text style={styles.doneButtonText}>J'ai contacté un artisan</Text>
-        </Pressable>
-      </MotiView>
     </ScrollView>
   );
 }
