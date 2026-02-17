@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, Pressable } from 'react-native';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
-import { FileText, Plus } from 'lucide-react-native';
+import { FileText } from 'lucide-react-native';
 import { Header } from '@/components/Header';
 import { ContractCard } from '@/components/ContractCard';
 import { ContractDetailModal } from '@/components/ContractDetailModal';
@@ -43,9 +43,6 @@ export default function ContratsScreen() {
             <Text style={styles.summaryLabel}>Dépenses mensuelles</Text>
             <Text style={styles.summaryValue}>236,99 €</Text>
           </View>
-          <Pressable style={styles.addButton}>
-            <Plus size={18} color="#ffffff" />
-          </Pressable>
         </MotiView>
 
         <MotiView
@@ -98,9 +95,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a373e',
     borderRadius: 16,
     padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: 24,
   },
   summaryLabel: {
@@ -112,14 +106,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     marginTop: 2,
-  },
-  addButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: '#ef4146',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   titleRow: {
     flexDirection: 'row',
