@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
-import { CheckCircle, Clock } from 'lucide-react-native';
+import { CheckCircle, Clock, Home } from 'lucide-react-native';
 
 interface ChatConfirmationProps {
   categoryLabel: string;
@@ -55,7 +55,8 @@ export function ChatConfirmation({
         </Text>
 
         <Pressable style={styles.button} onPress={onNewRequest}>
-          <Text style={styles.buttonText}>Nouvelle demande</Text>
+          <Home size={20} color="#ffffff" />
+          <Text style={styles.buttonText}>Retour à l'accueil</Text>
         </Pressable>
       </MotiView>
     </View>
@@ -145,6 +146,9 @@ const styles = StyleSheet.create({
     padding: 16,
     width: '100%',
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
   },
   buttonText: {
     color: '#ffffff',

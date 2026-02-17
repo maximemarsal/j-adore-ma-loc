@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { MotiView } from 'moti';
-import { ArrowLeft, Upload, Camera, FileText, CheckCircle, X } from 'lucide-react-native';
+import { ArrowLeft, Upload, Camera, FileText, CheckCircle, X, Home } from 'lucide-react-native';
 import { SubCategory } from '@/constants/chatData';
 
 interface ChatTicketFormProps {
@@ -43,11 +43,11 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
             <CheckCircle size={48} color="#10b981" />
           </View>
 
-          <Text style={styles.successTitle}>Ticket créé !</Text>
+          <Text style={styles.successTitle}>Demande envoyée !</Text>
           
           <View style={styles.ticketCard}>
-            <Text style={styles.ticketLabel}>Numéro de ticket</Text>
-            <Text style={styles.ticketNumber}>TKT-2026-{Math.floor(Math.random() * 9000) + 1000}</Text>
+            <Text style={styles.ticketLabel}>Numéro de suivi</Text>
+            <Text style={styles.ticketNumber}>DEM-2026-{Math.floor(Math.random() * 9000) + 1000}</Text>
           </View>
 
           <View style={styles.infoCard}>
@@ -62,7 +62,8 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
           </Text>
 
           <Pressable style={styles.doneButton} onPress={onSubmit}>
-            <Text style={styles.doneButtonText}>Terminé</Text>
+            <Home size={20} color="#ffffff" />
+            <Text style={styles.doneButtonText}>Retour à l'accueil</Text>
           </Pressable>
         </MotiView>
       </View>
@@ -81,8 +82,8 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 300 }}
       >
-        <Text style={styles.title}>Créer un ticket</Text>
-        <Text style={styles.subtitle}>Demande à la charge du propriétaire</Text>
+        <Text style={styles.title}>Votre demande</Text>
+        <Text style={styles.subtitle}>Demande de prise en charge propriétaire</Text>
 
         <View style={styles.problemCard}>
           <Text style={styles.problemLabel}>Problème signalé</Text>
@@ -95,7 +96,7 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 300, delay: 100 }}
       >
-        <Text style={styles.sectionTitle}>1. Télécharger un devis</Text>
+        <Text style={styles.sectionTitle}>1. Télécharger le devis</Text>
         <Pressable 
           style={[styles.uploadCard, devisUploaded && styles.uploadCardDone]}
           onPress={handleDevisUpload}
@@ -119,7 +120,7 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
                 <FileText size={24} color="#ef4146" />
               </View>
               <View style={styles.uploadTextContainer}>
-                <Text style={styles.uploadText}>Ajouter un devis</Text>
+                <Text style={styles.uploadText}>Ajouter le devis</Text>
                 <Text style={styles.uploadSubtext}>PDF, JPG ou PNG (max 5 Mo)</Text>
               </View>
               <Upload size={20} color="#9ca3af" />
@@ -199,7 +200,7 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
           onPress={handleSubmit}
           disabled={!devisUploaded || !description}
         >
-          <Text style={styles.submitButtonText}>Créer le ticket</Text>
+          <Text style={styles.submitButtonText}>Envoyer ma demande</Text>
         </Pressable>
 
         <Text style={styles.note}>
@@ -415,6 +416,9 @@ const styles = StyleSheet.create({
     padding: 16,
     width: '100%',
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
   },
   doneButtonText: {
     color: '#ffffff',

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, ScrollView, Image } from 'react-native';
 import { MotiView } from 'moti';
-import { ArrowLeft, ChevronRight, Phone, Tag, Copy, Check, Wrench, User, Building2, FileText } from 'lucide-react-native';
+import { ArrowLeft, ChevronRight, Phone, Tag, Copy, Check, User, Building2, Send } from 'lucide-react-native';
 import { SubCategory, Artisan, artisans } from '@/constants/chatData';
 
 interface ChatMaintenanceProps {
@@ -11,7 +11,7 @@ interface ChatMaintenanceProps {
   onOwnerCharge: (subCategory: SubCategory) => void;
 }
 
-type Step = 'choice' | 'subcategory-mycharge' | 'artisans' | 'subcategory-owner' | 'owner-process';
+type Step = 'subcategory' | 'choice' | 'artisans' | 'owner-process';
 
 export function ChatMaintenance({ 
   subCategories, 
@@ -19,7 +19,7 @@ export function ChatMaintenance({
   onMyCharge,
   onOwnerCharge 
 }: ChatMaintenanceProps) {
-  const [step, setStep] = useState<Step>('choice');
+  const [step, setStep] = useState<Step>('subcategory');
   const [selectedSub, setSelectedSub] = useState<SubCategory | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
@@ -28,8 +28,8 @@ export function ChatMaintenance({
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  // Step 1: Choice between "À ma charge" or "À la charge du propriétaire"
-  if (step === 'choice') {
+  // Step 1: Select subcategory first
+  if (step === 'subcategory') {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Pressable style={styles.backLink} onPress={onBack}>
@@ -43,7 +43,53 @@ export function ChatMaintenance({
           transition={{ type: 'timing', duration: 300 }}
         >
           <Text style={styles.title}>Maintenance & Réparations</Text>
-          <Text style={styles.subtitle}>Qui prend en charge la réparation ?</Text>
+          <Text style={styles.subtitle}>Quel est le type de problème ?</Text>
+        </MotiView>
+
+        {subCategories.map((sub, index) => (
+          <MotiView
+            key={sub.id}
+            from={{ opacity: 0, translateX: -20 }}
+            animate={{ opacity: 1, translateX: 0 }}
+            transition={{ type: 'timing', duration: 300, delay: index * 50 }}
+          >
+            <Pressable 
+              style={styles.optionCard} 
+              onPress={() => {
+                setSelectedSub(sub);
+                setStep('choice');
+              }}
+            >
+              <Text style={styles.optionLabel}>{sub.label}</Text>
+              <ChevronRight size={20} color="#9ca3af" />
+            </Pressable>
+          </MotiView>
+        ))}
+      </ScrollView>
+    );
+  }
+
+  // Step 2: Choice between "À ma charge" or "À la charge du propriétaire"
+  if (step === 'choice') {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <Pressable style={styles.backLink} onPress={() => setStep('subcategory')}>
+          <ArrowLeft size={20} color="#ef4146" />
+          <Text style={styles.backLinkText}>Retour</Text>
+        </Pressable>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300 }}
+        >
+          <View style={styles.selectedProblem}>
+            <Text style={styles.selectedProblemLabel}>Problème sélectionné</Text>
+            <Text style={styles.selectedProblemValue}>{selectedSub?.label}</Text>
+          </View>
+
+          <Text style={styles.title}>Qui prend en charge ?</Text>
+          <Text style={styles.subtitle}>Choisissez le mode de prise en charge</Text>
         </MotiView>
 
         <MotiView
@@ -53,7 +99,7 @@ export function ChatMaintenance({
         >
           <Pressable 
             style={styles.choiceCard}
-            onPress={() => setStep('subcategory-mycharge')}
+            onPress={() => setStep('artisans')}
           >
             <View style={styles.choiceIconContainer}>
               <User size={28} color="#0a373e" />
@@ -61,7 +107,7 @@ export function ChatMaintenance({
             <View style={styles.choiceContent}>
               <Text style={styles.choiceTitle}>À ma charge</Text>
               <Text style={styles.choiceDescription}>
-                Profitez de réductions exclusives avec nos artisans partenaires
+                Contactez un artisan partenaire et profitez de réductions exclusives
               </Text>
               <View style={styles.choiceBadge}>
                 <Text style={styles.choiceBadgeText}>Jusqu'à -20% de réduction</Text>
@@ -86,7 +132,7 @@ export function ChatMaintenance({
             <View style={styles.choiceContent}>
               <Text style={styles.choiceTitle}>À la charge du propriétaire</Text>
               <Text style={styles.choiceDescription}>
-                Créez un ticket avec devis pour demander la prise en charge
+                Faites une demande de prise en charge auprès de votre propriétaire
               </Text>
             </View>
             <ChevronRight size={20} color="#9ca3af" />
@@ -96,7 +142,7 @@ export function ChatMaintenance({
     );
   }
 
-  // Step: Owner process explanation
+  // Step: Owner process explanation with artisans
   if (step === 'owner-process') {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -110,8 +156,8 @@ export function ChatMaintenance({
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 300 }}
         >
-          <Text style={styles.title}>Demande à la charge du propriétaire</Text>
-          <Text style={styles.subtitle}>Suivez ces étapes pour créer votre ticket</Text>
+          <Text style={styles.title}>Demande de prise en charge</Text>
+          <Text style={styles.subtitle}>Suivez ces étapes pour faire votre demande</Text>
         </MotiView>
 
         <MotiView
@@ -153,9 +199,9 @@ export function ChatMaintenance({
               <Text style={styles.processNumberText}>3</Text>
             </View>
             <View style={styles.processStepContent}>
-              <Text style={styles.processStepTitle}>Envoyez-nous le ticket</Text>
+              <Text style={styles.processStepTitle}>Envoyez votre demande</Text>
               <Text style={styles.processStepDescription}>
-                Joignez le devis, une photo et une description du problème
+                Joignez le devis, une photo et une description
               </Text>
             </View>
           </View>
@@ -168,7 +214,7 @@ export function ChatMaintenance({
         >
           <Text style={styles.sectionTitle}>Nos artisans partenaires</Text>
           
-          {artisans.slice(0, 3).map((artisan, index) => (
+          {artisans.map((artisan, index) => (
             <View key={artisan.id} style={styles.miniArtisanCard}>
               <View style={styles.miniArtisanLogo}>
                 <Image
@@ -195,91 +241,12 @@ export function ChatMaintenance({
         >
           <Pressable 
             style={styles.createTicketButton}
-            onPress={() => setStep('subcategory-owner')}
+            onPress={() => selectedSub && onOwnerCharge(selectedSub)}
           >
-            <FileText size={20} color="#ffffff" />
-            <Text style={styles.createTicketButtonText}>Créer un ticket</Text>
+            <Send size={20} color="#ffffff" />
+            <Text style={styles.createTicketButtonText}>Faire ma demande</Text>
           </Pressable>
         </MotiView>
-      </ScrollView>
-    );
-  }
-
-  // Step: Select subcategory for owner charge
-  if (step === 'subcategory-owner') {
-    return (
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <Pressable style={styles.backLink} onPress={() => setStep('owner-process')}>
-          <ArrowLeft size={20} color="#ef4146" />
-          <Text style={styles.backLinkText}>Retour</Text>
-        </Pressable>
-
-        <MotiView
-          from={{ opacity: 0, translateY: 10 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 300 }}
-        >
-          <Text style={styles.title}>Type de problème</Text>
-          <Text style={styles.subtitle}>Sélectionnez le type de réparation</Text>
-        </MotiView>
-
-        {subCategories.map((sub, index) => (
-          <MotiView
-            key={sub.id}
-            from={{ opacity: 0, translateX: -20 }}
-            animate={{ opacity: 1, translateX: 0 }}
-            transition={{ type: 'timing', duration: 300, delay: index * 50 }}
-          >
-            <Pressable 
-              style={styles.optionCard} 
-              onPress={() => onOwnerCharge(sub)}
-            >
-              <Text style={styles.optionLabel}>{sub.label}</Text>
-              <ChevronRight size={20} color="#9ca3af" />
-            </Pressable>
-          </MotiView>
-        ))}
-      </ScrollView>
-    );
-  }
-
-  // Step: Select subcategory for my charge
-  if (step === 'subcategory-mycharge') {
-    return (
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <Pressable style={styles.backLink} onPress={() => setStep('choice')}>
-          <ArrowLeft size={20} color="#ef4146" />
-          <Text style={styles.backLinkText}>Retour</Text>
-        </Pressable>
-
-        <MotiView
-          from={{ opacity: 0, translateY: 10 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 300 }}
-        >
-          <Text style={styles.title}>Type de problème</Text>
-          <Text style={styles.subtitle}>Sélectionnez le type de réparation</Text>
-        </MotiView>
-
-        {subCategories.map((sub, index) => (
-          <MotiView
-            key={sub.id}
-            from={{ opacity: 0, translateX: -20 }}
-            animate={{ opacity: 1, translateX: 0 }}
-            transition={{ type: 'timing', duration: 300, delay: index * 50 }}
-          >
-            <Pressable 
-              style={styles.optionCard} 
-              onPress={() => {
-                setSelectedSub(sub);
-                setStep('artisans');
-              }}
-            >
-              <Text style={styles.optionLabel}>{sub.label}</Text>
-              <ChevronRight size={20} color="#9ca3af" />
-            </Pressable>
-          </MotiView>
-        ))}
       </ScrollView>
     );
   }
@@ -287,7 +254,7 @@ export function ChatMaintenance({
   // Step: Show artisans (for "à ma charge")
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Pressable style={styles.backLink} onPress={() => setStep('subcategory-mycharge')}>
+      <Pressable style={styles.backLink} onPress={() => setStep('choice')}>
         <ArrowLeft size={20} color="#ef4146" />
         <Text style={styles.backLinkText}>Retour</Text>
       </Pressable>
@@ -394,6 +361,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6b7280',
     marginBottom: 20,
+  },
+  selectedProblem: {
+    backgroundColor: '#fef2f2',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 20,
+  },
+  selectedProblemLabel: {
+    fontSize: 11,
+    color: '#9ca3af',
+    marginBottom: 2,
+  },
+  selectedProblemValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#ef4146',
   },
   choiceCard: {
     backgroundColor: '#f8f9fa',
