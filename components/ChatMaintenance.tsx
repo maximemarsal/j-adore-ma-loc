@@ -110,7 +110,7 @@ export function ChatMaintenance({
                 Contactez un artisan partenaire et profitez de réductions exclusives
               </Text>
               <View style={styles.choiceBadge}>
-                <Text style={styles.choiceBadgeText}>Jusqu'à -20% de réduction</Text>
+                <Text style={styles.choiceBadgeText}>Jusqu'à -20% de réduction sur les artisans partenaires</Text>
               </View>
             </View>
             <ChevronRight size={20} color="#9ca3af" />
