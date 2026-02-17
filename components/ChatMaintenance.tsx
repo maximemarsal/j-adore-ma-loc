@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, ScrollView, Image, TextInput } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, Image } from 'react-native';
 import { MotiView } from 'moti';
-import { ArrowLeft, ChevronRight, Phone, Tag, Copy, Check } from 'lucide-react-native';
+import { ArrowLeft, ChevronRight, Phone, Tag, Copy, Check, Wrench, User, Building2, FileText } from 'lucide-react-native';
 import { SubCategory, Artisan, artisans } from '@/constants/chatData';
 
 interface ChatMaintenanceProps {
@@ -11,7 +11,7 @@ interface ChatMaintenanceProps {
   onOwnerCharge: (subCategory: SubCategory) => void;
 }
 
-type Step = 'subcategory' | 'artisans' | 'choice';
+type Step = 'choice' | 'subcategory-mycharge' | 'artisans' | 'subcategory-owner' | 'owner-process';
 
 export function ChatMaintenance({ 
   subCategories, 
@@ -19,31 +19,17 @@ export function ChatMaintenance({
   onMyCharge,
   onOwnerCharge 
 }: ChatMaintenanceProps) {
-  const [step, setStep] = useState<Step>('subcategory');
+  const [step, setStep] = useState<Step>('choice');
   const [selectedSub, setSelectedSub] = useState<SubCategory | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-
-  const handleSubSelect = (sub: SubCategory) => {
-    setSelectedSub(sub);
-    setStep('artisans');
-  };
 
   const handleCopyCode = (code: string) => {
     setCopiedCode(code);
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const handleMyCharge = () => {
-    onMyCharge();
-  };
-
-  const handleOwnerCharge = () => {
-    if (selectedSub) {
-      onOwnerCharge(selectedSub);
-    }
-  };
-
-  if (step === 'subcategory') {
+  // Step 1: Choice between "À ma charge" or "À la charge du propriétaire"
+  if (step === 'choice') {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Pressable style={styles.backLink} onPress={onBack}>
@@ -57,7 +43,184 @@ export function ChatMaintenance({
           transition={{ type: 'timing', duration: 300 }}
         >
           <Text style={styles.title}>Maintenance & Réparations</Text>
-          <Text style={styles.subtitle}>Quel est le problème ?</Text>
+          <Text style={styles.subtitle}>Qui prend en charge la réparation ?</Text>
+        </MotiView>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300, delay: 100 }}
+        >
+          <Pressable 
+            style={styles.choiceCard}
+            onPress={() => setStep('subcategory-mycharge')}
+          >
+            <View style={styles.choiceIconContainer}>
+              <User size={28} color="#0a373e" />
+            </View>
+            <View style={styles.choiceContent}>
+              <Text style={styles.choiceTitle}>À ma charge</Text>
+              <Text style={styles.choiceDescription}>
+                Profitez de réductions exclusives avec nos artisans partenaires
+              </Text>
+              <View style={styles.choiceBadge}>
+                <Text style={styles.choiceBadgeText}>Jusqu'à -20% de réduction</Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color="#9ca3af" />
+          </Pressable>
+        </MotiView>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300, delay: 200 }}
+        >
+          <Pressable 
+            style={styles.choiceCard}
+            onPress={() => setStep('owner-process')}
+          >
+            <View style={[styles.choiceIconContainer, styles.ownerIconContainer]}>
+              <Building2 size={28} color="#ffffff" />
+            </View>
+            <View style={styles.choiceContent}>
+              <Text style={styles.choiceTitle}>À la charge du propriétaire</Text>
+              <Text style={styles.choiceDescription}>
+                Créez un ticket avec devis pour demander la prise en charge
+              </Text>
+            </View>
+            <ChevronRight size={20} color="#9ca3af" />
+          </Pressable>
+        </MotiView>
+      </ScrollView>
+    );
+  }
+
+  // Step: Owner process explanation
+  if (step === 'owner-process') {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <Pressable style={styles.backLink} onPress={() => setStep('choice')}>
+          <ArrowLeft size={20} color="#ef4146" />
+          <Text style={styles.backLinkText}>Retour</Text>
+        </Pressable>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300 }}
+        >
+          <Text style={styles.title}>Demande à la charge du propriétaire</Text>
+          <Text style={styles.subtitle}>Suivez ces étapes pour créer votre ticket</Text>
+        </MotiView>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300, delay: 100 }}
+          style={styles.processCard}
+        >
+          <View style={styles.processStep}>
+            <View style={styles.processNumber}>
+              <Text style={styles.processNumberText}>1</Text>
+            </View>
+            <View style={styles.processStepContent}>
+              <Text style={styles.processStepTitle}>Contactez un artisan partenaire</Text>
+              <Text style={styles.processStepDescription}>
+                Profitez de nos réductions même pour un devis
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.processLine} />
+
+          <View style={styles.processStep}>
+            <View style={styles.processNumber}>
+              <Text style={styles.processNumberText}>2</Text>
+            </View>
+            <View style={styles.processStepContent}>
+              <Text style={styles.processStepTitle}>Demandez un devis</Text>
+              <Text style={styles.processStepDescription}>
+                L'artisan établira un diagnostic et un devis détaillé
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.processLine} />
+
+          <View style={styles.processStep}>
+            <View style={styles.processNumber}>
+              <Text style={styles.processNumberText}>3</Text>
+            </View>
+            <View style={styles.processStepContent}>
+              <Text style={styles.processStepTitle}>Envoyez-nous le ticket</Text>
+              <Text style={styles.processStepDescription}>
+                Joignez le devis, une photo et une description du problème
+              </Text>
+            </View>
+          </View>
+        </MotiView>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300, delay: 200 }}
+        >
+          <Text style={styles.sectionTitle}>Nos artisans partenaires</Text>
+          
+          {artisans.slice(0, 3).map((artisan, index) => (
+            <View key={artisan.id} style={styles.miniArtisanCard}>
+              <View style={styles.miniArtisanLogo}>
+                <Image
+                  source={{ uri: artisan.logo }}
+                  style={styles.miniLogo}
+                  resizeMode="contain"
+                />
+              </View>
+              <View style={styles.miniArtisanInfo}>
+                <Text style={styles.miniArtisanName}>{artisan.name}</Text>
+                <Text style={styles.miniArtisanPhone}>{artisan.phone}</Text>
+              </View>
+              <View style={styles.miniDiscountBadge}>
+                <Text style={styles.miniDiscountText}>{artisan.discount}</Text>
+              </View>
+            </View>
+          ))}
+        </MotiView>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300, delay: 300 }}
+        >
+          <Pressable 
+            style={styles.createTicketButton}
+            onPress={() => setStep('subcategory-owner')}
+          >
+            <FileText size={20} color="#ffffff" />
+            <Text style={styles.createTicketButtonText}>Créer un ticket</Text>
+          </Pressable>
+        </MotiView>
+      </ScrollView>
+    );
+  }
+
+  // Step: Select subcategory for owner charge
+  if (step === 'subcategory-owner') {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <Pressable style={styles.backLink} onPress={() => setStep('owner-process')}>
+          <ArrowLeft size={20} color="#ef4146" />
+          <Text style={styles.backLinkText}>Retour</Text>
+        </Pressable>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300 }}
+        >
+          <Text style={styles.title}>Type de problème</Text>
+          <Text style={styles.subtitle}>Sélectionnez le type de réparation</Text>
         </MotiView>
 
         {subCategories.map((sub, index) => (
@@ -67,7 +230,10 @@ export function ChatMaintenance({
             animate={{ opacity: 1, translateX: 0 }}
             transition={{ type: 'timing', duration: 300, delay: index * 50 }}
           >
-            <Pressable style={styles.optionCard} onPress={() => handleSubSelect(sub)}>
+            <Pressable 
+              style={styles.optionCard} 
+              onPress={() => onOwnerCharge(sub)}
+            >
               <Text style={styles.optionLabel}>{sub.label}</Text>
               <ChevronRight size={20} color="#9ca3af" />
             </Pressable>
@@ -77,9 +243,51 @@ export function ChatMaintenance({
     );
   }
 
+  // Step: Select subcategory for my charge
+  if (step === 'subcategory-mycharge') {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <Pressable style={styles.backLink} onPress={() => setStep('choice')}>
+          <ArrowLeft size={20} color="#ef4146" />
+          <Text style={styles.backLinkText}>Retour</Text>
+        </Pressable>
+
+        <MotiView
+          from={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300 }}
+        >
+          <Text style={styles.title}>Type de problème</Text>
+          <Text style={styles.subtitle}>Sélectionnez le type de réparation</Text>
+        </MotiView>
+
+        {subCategories.map((sub, index) => (
+          <MotiView
+            key={sub.id}
+            from={{ opacity: 0, translateX: -20 }}
+            animate={{ opacity: 1, translateX: 0 }}
+            transition={{ type: 'timing', duration: 300, delay: index * 50 }}
+          >
+            <Pressable 
+              style={styles.optionCard} 
+              onPress={() => {
+                setSelectedSub(sub);
+                setStep('artisans');
+              }}
+            >
+              <Text style={styles.optionLabel}>{sub.label}</Text>
+              <ChevronRight size={20} color="#9ca3af" />
+            </Pressable>
+          </MotiView>
+        ))}
+      </ScrollView>
+    );
+  }
+
+  // Step: Show artisans (for "à ma charge")
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Pressable style={styles.backLink} onPress={() => setStep('subcategory')}>
+      <Pressable style={styles.backLink} onPress={() => setStep('subcategory-mycharge')}>
         <ArrowLeft size={20} color="#ef4146" />
         <Text style={styles.backLinkText}>Retour</Text>
       </Pressable>
@@ -148,18 +356,9 @@ export function ChatMaintenance({
         from={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ type: 'timing', duration: 400, delay: 400 }}
-        style={styles.choiceSection}
       >
-        <Text style={styles.choiceTitle}>Qui prend en charge la réparation ?</Text>
-        
-        <Pressable style={styles.myChargeButton} onPress={handleMyCharge}>
-          <Text style={styles.myChargeText}>À ma charge</Text>
-          <Text style={styles.myChargeSubtext}>J'ai contacté un artisan</Text>
-        </Pressable>
-
-        <Pressable style={styles.ownerChargeButton} onPress={handleOwnerCharge}>
-          <Text style={styles.ownerChargeText}>Demander à la charge du propriétaire</Text>
-          <Text style={styles.ownerChargeSubtext}>Créer un ticket avec devis</Text>
+        <Pressable style={styles.doneButton} onPress={onMyCharge}>
+          <Text style={styles.doneButtonText}>J'ai contacté un artisan</Text>
         </Pressable>
       </MotiView>
     </ScrollView>
@@ -195,6 +394,163 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6b7280',
     marginBottom: 20,
+  },
+  choiceCard: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  choiceIconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 14,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+  ownerIconContainer: {
+    backgroundColor: '#0a373e',
+  },
+  choiceContent: {
+    flex: 1,
+  },
+  choiceTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0a373e',
+    marginBottom: 4,
+  },
+  choiceDescription: {
+    fontSize: 13,
+    color: '#6b7280',
+    lineHeight: 18,
+  },
+  choiceBadge: {
+    backgroundColor: '#10b981',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    marginTop: 8,
+  },
+  choiceBadgeText: {
+    color: '#ffffff',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  processCard: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+  },
+  processStep: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  processNumber: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#0a373e',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+  processNumberText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  processStepContent: {
+    flex: 1,
+  },
+  processStepTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#0a373e',
+    marginBottom: 4,
+  },
+  processStepDescription: {
+    fontSize: 13,
+    color: '#6b7280',
+    lineHeight: 18,
+  },
+  processLine: {
+    width: 2,
+    height: 20,
+    backgroundColor: '#e5e7eb',
+    marginLeft: 15,
+    marginVertical: 8,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0a373e',
+    marginBottom: 12,
+  },
+  miniArtisanCard: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  miniArtisanLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  miniLogo: {
+    width: 28,
+    height: 28,
+  },
+  miniArtisanInfo: {
+    flex: 1,
+  },
+  miniArtisanName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0a373e',
+  },
+  miniArtisanPhone: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  miniDiscountBadge: {
+    backgroundColor: '#ef4146',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  miniDiscountText: {
+    color: '#ffffff',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  createTicketButton: {
+    backgroundColor: '#0a373e',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
+    marginTop: 16,
+  },
+  createTicketButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   optionCard: {
     backgroundColor: '#f8f9fa',
@@ -290,50 +646,16 @@ const styles = StyleSheet.create({
     color: '#0a373e',
     fontWeight: '600',
   },
-  choiceSection: {
-    marginTop: 24,
-    borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
-    paddingTop: 24,
-  },
-  choiceTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#0a373e',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  myChargeButton: {
+  doneButton: {
     backgroundColor: '#10b981',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
-    marginBottom: 12,
+    marginTop: 16,
   },
-  myChargeText: {
+  doneButtonText: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  myChargeSubtext: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 12,
-    marginTop: 4,
-  },
-  ownerChargeButton: {
-    backgroundColor: '#0a373e',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  ownerChargeText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  ownerChargeSubtext: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 12,
-    marginTop: 4,
   },
 });

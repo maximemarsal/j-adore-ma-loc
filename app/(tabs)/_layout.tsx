@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Gift, FileText, MessageCircle } from 'lucide-react-native';
+import { Gift, FileText, Home } from 'lucide-react-native';
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -54,9 +54,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="chat"
         options={{
-          title: 'Contact',
+          title: 'Ma Loc',
           tabBarIcon: ({ color, size }) => (
-            <MessageCircle size={size} color={color} />
+            <Home size={size} color={color} />
           ),
         }}
       />
