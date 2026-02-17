@@ -157,14 +157,14 @@ const styles = StyleSheet.create({
   },
   maintenanceBadge: {
     backgroundColor: '#10b981',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 4,
     marginTop: 8,
   },
   maintenanceBadgeText: {
     color: '#ffffff',
-    fontSize: 9,
+    fontSize: 8,
     fontWeight: 'bold',
   },
 });

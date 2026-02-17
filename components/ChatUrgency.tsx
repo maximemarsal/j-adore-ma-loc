@@ -36,7 +36,7 @@ export function ChatUrgency({ onBack }: ChatUrgencyProps) {
         </Text>
 
         <View style={styles.urgencyList}>
-          <Text style={styles.urgencyItem}>• Dégât des eaux</Text>
+          <Text style={styles.urgencyItem}>• Dégât des eaux (grave)</Text>
           <Text style={styles.urgencyItem}>• Fuite de gaz</Text>
           <Text style={styles.urgencyItem}>• Incendie</Text>
           <Text style={styles.urgencyItem}>• Cambriolage / Effraction</Text>
