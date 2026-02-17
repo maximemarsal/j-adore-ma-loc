@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { View, ScrollView, Text, StyleSheet, Pressable } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { MotiView } from 'moti';
 import { 
   Grid, Home, Shirt, Dumbbell, UtensilsCrossed, Smartphone, 
-  Sparkles, Play, ShoppingCart, BookOpen, Plane, Wrench, LucideIcon 
+  Sparkles, Play, ShoppingCart, BookOpen, Plane, Wrench, LucideIcon,
+  Search, X
 } from 'lucide-react-native';
 import { Header } from '@/components/Header';
 import { AdvantageCard } from '@/components/AdvantageCard';
@@ -29,13 +30,28 @@ export default function AvantagesScreen() {
   const [selectedAdvantage, setSelectedAdvantage] = useState<Advantage | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredAdvantages = useMemo(() => {
-    if (selectedCategory === 'all') {
-      return advantages;
+    let filtered = advantages;
+    
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(adv => adv.category === selectedCategory);
     }
-    return advantages.filter(adv => adv.category === selectedCategory);
-  }, [selectedCategory]);
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(adv => 
+        adv.brand.toLowerCase().includes(query) ||
+        adv.description.toLowerCase().includes(query) ||
+        adv.category.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered;
+  }, [selectedCategory, searchQuery]);
 
   const handleAdvantagePress = (advantage: Advantage) => {
     setSelectedAdvantage(advantage);
@@ -53,6 +69,25 @@ export default function AvantagesScreen() {
         title="J'adore Ma Loc" 
         subtitle="Mes avantages"
       />
+      
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <View style={styles.searchInputWrapper}>
+          <Search size={18} color="#9ca3af" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Rechercher une marque..."
+            placeholderTextColor="#9ca3af"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery.length > 0 && (
+            <Pressable onPress={() => setSearchQuery('')} style={styles.clearButton}>
+              <X size={16} color="#9ca3af" />
+            </Pressable>
+          )}
+        </View>
+      </View>
       
       {/* Category Filter */}
       <View style={styles.categoryContainer}>
@@ -126,6 +161,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+  },
+  searchInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f3f4f6',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 44,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: '#1f2937',
+    height: '100%',
+  },
+  clearButton: {
+    padding: 4,
   },
   categoryContainer: {
     borderBottomWidth: 1,
