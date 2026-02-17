@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Gift, FileText } from 'lucide-react-native';
+import { Gift, FileText, MessageCircle } from 'lucide-react-native';
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -27,7 +27,7 @@ export default function TabLayout() {
           paddingTop: 10,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '600',
         },
         headerShown: false,
@@ -36,7 +36,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Mes Avantages',
+          title: 'Avantages',
           tabBarIcon: ({ color, size }) => (
             <Gift size={size} color={color} />
           ),
@@ -45,9 +45,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="contrats"
         options={{
-          title: 'Mes Contrats',
+          title: 'Contrats',
           tabBarIcon: ({ color, size }) => (
             <FileText size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          title: 'Contact',
+          tabBarIcon: ({ color, size }) => (
+            <MessageCircle size={size} color={color} />
           ),
         }}
       />
