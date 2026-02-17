@@ -1,0 +1,21 @@
+{
+  "name": "J'adore Ma Loc",
+  "short_name": "J'adore Ma Loc",
+  "description": "Application pour locataires - Réductions exclusives et suivi de contrats",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#0a373e",
+  "icons": [
+    {
+      "src": "/assets/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

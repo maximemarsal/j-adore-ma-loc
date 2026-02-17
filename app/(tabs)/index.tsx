@@ -1,14 +1,56 @@
-import { StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { MotiView } from 'moti';
+import { Header } from '@/components/Header';
+import { AdvantageCard } from '@/components/AdvantageCard';
+import { AdvantageDetailModal } from '@/components/AdvantageDetailModal';
+import { advantages, Advantage } from '@/constants/mockData';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function AvantagesScreen() {
+  const [selectedAdvantage, setSelectedAdvantage] = useState<Advantage | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-export default function TabOneScreen() {
+  const handleAdvantagePress = (advantage: Advantage) => {
+    setSelectedAdvantage(advantage);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedAdvantage(null);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <Header 
+        title="J'adore Ma Loc" 
+        subtitle="Mes avantages"
+      />
+      
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.grid}>
+          {advantages.map((advantage, index) => (
+            <AdvantageCard 
+              key={advantage.id} 
+              advantage={advantage} 
+              index={index}
+              onPress={() => handleAdvantagePress(advantage)}
+            />
+          ))}
+        </View>
+
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+
+      <AdvantageDetailModal
+        advantage={selectedAdvantage}
+        visible={modalVisible}
+        onClose={handleCloseModal}
+      />
     </View>
   );
 }
@@ -16,16 +58,20 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#ffffff',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  scrollView: {
+    flex: 1,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  scrollContent: {
+    padding: 16,
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  bottomSpacer: {
+    height: 20,
   },
 });

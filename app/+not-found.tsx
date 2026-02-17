@@ -1,40 +1,37 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
-
-import { Text, View } from '@/components/Themed';
+import { View, Text, Pressable } from 'react-native';
+import { MotiView } from 'moti';
+import { Home, AlertCircle } from 'lucide-react-native';
 
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <View style={styles.container}>
-        <Text style={styles.title}>This screen doesn't exist.</Text>
+      <Stack.Screen options={{ title: 'Page introuvable' }} />
+      <View className="flex-1 bg-gray-50 items-center justify-center p-6">
+        <MotiView
+          from={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'timing', duration: 400 }}
+          className="items-center"
+        >
+          <View className="bg-primary/10 rounded-full p-6 mb-6">
+            <AlertCircle size={48} color="#ef4146" />
+          </View>
+          <Text className="text-secondary text-2xl font-bold text-center mb-2">
+            Page introuvable
+          </Text>
+          <Text className="text-gray-500 text-center mb-8">
+            Cette page n'existe pas ou a été déplacée.
+          </Text>
 
-        <Link href="/" style={styles.link}>
-          <Text style={styles.linkText}>Go to home screen!</Text>
-        </Link>
+          <Link href="/" asChild>
+            <Pressable className="bg-primary flex-row items-center gap-2 px-6 py-4 rounded-xl">
+              <Home size={20} color="#ffffff" />
+              <Text className="text-white font-bold">Retour à l'accueil</Text>
+            </Pressable>
+          </Link>
+        </MotiView>
       </View>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-  linkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
-});
