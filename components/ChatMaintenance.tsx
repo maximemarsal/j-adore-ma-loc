@@ -251,7 +251,7 @@ export function ChatMaintenance({
     );
   }
 
-  // Step: Show artisans (for "à ma charge")
+  // Step: Show artisans (for "à ma charge") - similar layout to owner process
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Pressable style={styles.backLink} onPress={() => setStep('choice')}>
@@ -264,81 +264,97 @@ export function ChatMaintenance({
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 300 }}
       >
-        <Text style={styles.title}>Artisans partenaires</Text>
-        <Text style={styles.subtitle}>
-          Profitez de réductions exclusives en mentionnant J'adore Ma Loc
-        </Text>
+        <Text style={styles.title}>Intervention à ma charge</Text>
+        <Text style={styles.subtitle}>Suivez ces étapes pour votre intervention</Text>
       </MotiView>
-
-      {artisans.map((artisan, index) => (
-        <MotiView
-          key={artisan.id}
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 300, delay: index * 80 }}
-        >
-          <View style={styles.artisanCard}>
-            <View style={styles.artisanHeader}>
-              <View style={styles.artisanLogo}>
-                <Image
-                  source={{ uri: artisan.logo }}
-                  style={styles.logo}
-                  resizeMode="contain"
-                />
-              </View>
-              <View style={styles.artisanInfo}>
-                <Text style={styles.artisanName}>{artisan.name}</Text>
-                <Text style={styles.artisanSpecialty}>{artisan.specialty}</Text>
-              </View>
-              <View style={styles.discountBadge}>
-                <Text style={styles.discountText}>{artisan.discount}</Text>
-              </View>
-            </View>
-
-            <View style={styles.codeRow}>
-              <Tag size={16} color="#ef4146" />
-              <Text style={styles.codeLabel}>Code promo :</Text>
-              <Text style={styles.codeValue}>{artisan.code}</Text>
-              <Pressable 
-                style={styles.copyButton}
-                onPress={() => handleCopyCode(artisan.code)}
-              >
-                {copiedCode === artisan.code ? (
-                  <Check size={14} color="#10b981" />
-                ) : (
-                  <Copy size={14} color="#6b7280" />
-                )}
-              </Pressable>
-            </View>
-
-            <View style={styles.phoneRow}>
-              <Phone size={16} color="#0a373e" />
-              <Text style={styles.phoneNumber}>{artisan.phone}</Text>
-            </View>
-          </View>
-        </MotiView>
-      ))}
 
       <MotiView
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'timing', duration: 300, delay: artisans.length * 80 }}
+        transition={{ type: 'timing', duration: 300, delay: 100 }}
+        style={styles.processCard}
       >
-        <View style={styles.notifySection}>
-          <Text style={styles.notifySectionTitle}>Prévenir l'agence ?</Text>
-          <Text style={styles.notifySectionText}>
-            Vous pouvez informer l'agence de votre intervention (devis facultatif)
-          </Text>
-          <Pressable 
-            style={styles.notifyButton}
-            onPress={() => selectedSub && onMyCharge(selectedSub)}
-          >
-            <Send size={18} color="#ffffff" />
-            <Text style={styles.notifyButtonText}>Prévenir l'agence</Text>
-          </Pressable>
+        <View style={styles.processStep}>
+          <View style={styles.processNumber}>
+            <Text style={styles.processNumberText}>1</Text>
+          </View>
+          <View style={styles.processStepContent}>
+            <Text style={styles.processStepTitle}>Contactez un artisan partenaire</Text>
+            <Text style={styles.processStepDescription}>
+              Profitez de réductions exclusives J'adore Ma Loc
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.processLine} />
+
+        <View style={styles.processStep}>
+          <View style={styles.processNumber}>
+            <Text style={styles.processNumberText}>2</Text>
+          </View>
+          <View style={styles.processStepContent}>
+            <Text style={styles.processStepTitle}>Réalisez l'intervention</Text>
+            <Text style={styles.processStepDescription}>
+              L'artisan effectue les travaux nécessaires
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.processLine} />
+
+        <View style={styles.processStep}>
+          <View style={styles.processNumber}>
+            <Text style={styles.processNumberText}>3</Text>
+          </View>
+          <View style={styles.processStepContent}>
+            <Text style={styles.processStepTitle}>Prévenez l'agence</Text>
+            <Text style={styles.processStepDescription}>
+              Informez l'agence de l'intervention (devis facultatif)
+            </Text>
+          </View>
         </View>
       </MotiView>
 
+      <MotiView
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: 'timing', duration: 300, delay: 200 }}
+      >
+        <Text style={styles.sectionTitle}>Nos artisans partenaires</Text>
+        
+        {artisans.map((artisan, index) => (
+          <View key={artisan.id} style={styles.miniArtisanCard}>
+            <View style={styles.miniArtisanLogo}>
+              <Image
+                source={{ uri: artisan.logo }}
+                style={styles.miniLogo}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.miniArtisanInfo}>
+              <Text style={styles.miniArtisanName}>{artisan.name}</Text>
+              <Text style={styles.miniArtisanPhone}>{artisan.phone}</Text>
+            </View>
+            <View style={styles.miniDiscountBadge}>
+              <Text style={styles.miniDiscountText}>{artisan.discount}</Text>
+            </View>
+          </View>
+        ))}
+      </MotiView>
+
+      <MotiView
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: 'timing', duration: 300, delay: 300 }}
+      >
+        <Pressable 
+          style={styles.createTicketButton}
+          onPress={() => selectedSub && onMyCharge(selectedSub)}
+        >
+          <Send size={20} color="#ffffff" />
+          <Text style={styles.createTicketButtonText}>Prévenir l'agence</Text>
+        </Pressable>
+      </MotiView>
     </ScrollView>
   );
 }
@@ -651,38 +667,5 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  notifySection: {
-    backgroundColor: '#f0fdf4',
-    borderRadius: 14,
-    padding: 16,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: '#bbf7d0',
-  },
-  notifySectionTitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#0a373e',
-    marginBottom: 4,
-  },
-  notifySectionText: {
-    fontSize: 13,
-    color: '#6b7280',
-    marginBottom: 12,
-  },
-  notifyButton: {
-    backgroundColor: '#10b981',
-    borderRadius: 10,
-    padding: 14,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  notifyButtonText: {
-    color: '#ffffff',
-    fontSize: 15,
-    fontWeight: '600',
   },
 });
