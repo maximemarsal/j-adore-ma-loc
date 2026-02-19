@@ -7,7 +7,7 @@ import { SubCategory, Artisan, artisans } from '@/constants/chatData';
 interface ChatMaintenanceProps {
   subCategories: SubCategory[];
   onBack: () => void;
-  onMyCharge: () => void;
+  onMyCharge: (subCategory: SubCategory) => void;
   onOwnerCharge: (subCategory: SubCategory) => void;
 }
 
@@ -318,6 +318,26 @@ export function ChatMaintenance({
           </View>
         </MotiView>
       ))}
+
+      <MotiView
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: 'timing', duration: 300, delay: artisans.length * 80 }}
+      >
+        <View style={styles.notifySection}>
+          <Text style={styles.notifySectionTitle}>Prévenir l'agence ?</Text>
+          <Text style={styles.notifySectionText}>
+            Vous pouvez informer l'agence de votre intervention (devis facultatif)
+          </Text>
+          <Pressable 
+            style={styles.notifyButton}
+            onPress={() => selectedSub && onMyCharge(selectedSub)}
+          >
+            <Send size={18} color="#ffffff" />
+            <Text style={styles.notifyButtonText}>Prévenir l'agence</Text>
+          </Pressable>
+        </View>
+      </MotiView>
 
     </ScrollView>
   );
@@ -631,5 +651,38 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  notifySection: {
+    backgroundColor: '#f0fdf4',
+    borderRadius: 14,
+    padding: 16,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#bbf7d0',
+  },
+  notifySectionTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#0a373e',
+    marginBottom: 4,
+  },
+  notifySectionText: {
+    fontSize: 13,
+    color: '#6b7280',
+    marginBottom: 12,
+  },
+  notifyButton: {
+    backgroundColor: '#10b981',
+    borderRadius: 10,
+    padding: 14,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  notifyButtonText: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });

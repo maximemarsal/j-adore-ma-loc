@@ -17,8 +17,8 @@ type Step =
   | 'urgency'
   | 'maintenance'
   | 'ticket'
-  | 'divers'
-  | 'maintenance-done';
+  | 'ticket-mycharge'
+  | 'divers';
 
 export default function ChatScreen() {
   const [step, setStep] = useState<Step>('categories');
@@ -60,8 +60,9 @@ export default function ChatScreen() {
     setSelectedSubCategory(null);
   };
 
-  const handleMaintenanceMyCharge = () => {
-    setStep('maintenance-done');
+  const handleMaintenanceMyCharge = (subCategory: SubCategory) => {
+    setSelectedSubCategory(subCategory);
+    setStep('ticket-mycharge');
   };
 
   const handleMaintenanceOwnerCharge = (subCategory: SubCategory) => {
@@ -122,15 +123,6 @@ export default function ChatScreen() {
           />
         );
 
-      case 'maintenance-done':
-        return (
-          <ChatConfirmation
-            categoryLabel="Maintenance & Réparations"
-            subCategoryLabel="Prise en charge personnelle"
-            onNewRequest={handleNewRequest}
-          />
-        );
-
       case 'ticket':
         if (!selectedSubCategory) return null;
         return (
@@ -138,6 +130,18 @@ export default function ChatScreen() {
             subCategory={selectedSubCategory}
             onBack={() => setStep('maintenance')}
             onSubmit={handleTicketSubmit}
+            isOwnerCharge={true}
+          />
+        );
+
+      case 'ticket-mycharge':
+        if (!selectedSubCategory) return null;
+        return (
+          <ChatTicketForm
+            subCategory={selectedSubCategory}
+            onBack={() => setStep('maintenance')}
+            onSubmit={handleTicketSubmit}
+            isOwnerCharge={false}
           />
         );
 

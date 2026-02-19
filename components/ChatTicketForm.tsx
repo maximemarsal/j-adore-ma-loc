@@ -8,9 +8,10 @@ interface ChatTicketFormProps {
   subCategory: SubCategory;
   onBack: () => void;
   onSubmit: () => void;
+  isOwnerCharge?: boolean;
 }
 
-export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketFormProps) {
+export function ChatTicketForm({ subCategory, onBack, onSubmit, isOwnerCharge = true }: ChatTicketFormProps) {
   const [devisUploaded, setDevisUploaded] = useState(false);
   const [photoUploaded, setPhotoUploaded] = useState(false);
   const [description, setDescription] = useState('');
@@ -53,8 +54,8 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>Prochaines étapes</Text>
             <Text style={styles.infoStep}>1. L'agence va examiner votre demande</Text>
-            <Text style={styles.infoStep}>2. Le propriétaire sera contacté</Text>
-            <Text style={styles.infoStep}>3. Vous serez notifié de la décision</Text>
+            {isOwnerCharge && <Text style={styles.infoStep}>2. Le propriétaire sera contacté</Text>}
+            <Text style={styles.infoStep}>{isOwnerCharge ? '3.' : '2.'} Vous serez notifié de la décision</Text>
           </View>
 
           <Text style={styles.disclaimer}>
@@ -83,7 +84,9 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
         transition={{ type: 'timing', duration: 300 }}
       >
         <Text style={styles.title}>Votre demande</Text>
-        <Text style={styles.subtitle}>Demande de prise en charge propriétaire</Text>
+        <Text style={styles.subtitle}>
+          {isOwnerCharge ? 'Demande de prise en charge propriétaire' : 'Signalement à l\'agence'}
+        </Text>
 
         <View style={styles.problemCard}>
           <Text style={styles.problemLabel}>Problème signalé</Text>
@@ -96,7 +99,7 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 300, delay: 100 }}
       >
-        <Text style={styles.sectionTitle}>1. Télécharger le devis</Text>
+        <Text style={styles.sectionTitle}>1. Télécharger le devis {!isOwnerCharge && <Text style={styles.optional}>(facultatif)</Text>}</Text>
         <Pressable 
           style={[styles.uploadCard, devisUploaded && styles.uploadCardDone]}
           onPress={handleDevisUpload}
@@ -195,16 +198,18 @@ export function ChatTicketForm({ subCategory, onBack, onSubmit }: ChatTicketForm
         <Pressable 
           style={[
             styles.submitButton,
-            (!devisUploaded || !description) && styles.submitButtonDisabled
+            (isOwnerCharge ? (!devisUploaded || !description) : !description) && styles.submitButtonDisabled
           ]}
           onPress={handleSubmit}
-          disabled={!devisUploaded || !description}
+          disabled={isOwnerCharge ? (!devisUploaded || !description) : !description}
         >
           <Text style={styles.submitButtonText}>Envoyer ma demande</Text>
         </Pressable>
 
         <Text style={styles.note}>
-          * Le devis et la description sont obligatoires
+          {isOwnerCharge 
+            ? '* Le devis et la description sont obligatoires'
+            : '* La description est obligatoire, le devis est facultatif'}
         </Text>
       </MotiView>
     </ScrollView>
@@ -346,6 +351,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9ca3af',
     textAlign: 'center',
+  },
+  optional: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: 'normal',
   },
   successContent: {
     flex: 1,
